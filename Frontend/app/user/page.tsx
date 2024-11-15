@@ -2,7 +2,9 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import React from "react";
-import { LoginUser, SignupUser } from "../API/HandlesApi";
+import { LoginUser, SignupUser } from "../ApiRoutes/HandlesApi";
+import { useRouter } from "next/navigation";
+
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -12,13 +14,15 @@ const LoginPage = () => {
   const [name, setName] = useState("");
   const [Errname, setErrName] = useState(false);
   const [Signup, setSignup] = useState(false);
+  const router = useRouter();
   let errors = "";
 
 
-  const login = async (email: any, password: any) => {
+  const login = async (email: any, password: any, router:any) => {
     try {
-      const isSuccess = await LoginUser({ email, password });
+      const isSuccess = await LoginUser({ email, password, router});
     } catch (error: any) {
+      console.log(error)
       if (error.message.includes("Invalid `email` param")) {
         errors = "Enter a valid email address";
         setErrEmail(true);
@@ -34,14 +38,14 @@ const LoginPage = () => {
         setErrEmail(true);
         setErrPassword(true);
       }
-      alert(errors);
+      // alert(errors);
       setPassword("");
     }
   };
 
-  const Signupfunction = async (email: any, password: any, username:any) => {
+  const Signupfunction = async (email: any, password: any, username:any, router:any) => {
     try {
-      const isSuccess = await SignupUser({ email, password,username });
+      const isSuccess = await SignupUser({ email, password,username,router });
     } catch (error: any) {
       if (error.message.includes("Invalid `email` param")) {
         errors = "Enter a valid email address";
@@ -58,7 +62,7 @@ const LoginPage = () => {
         setErrEmail(true);
         setErrPassword(true);
       }
-      alert(errors);
+      // alert(errors);
       setPassword("");
     }
   };
@@ -146,7 +150,7 @@ const LoginPage = () => {
                         type="button"
                         onClick={() => {
                           // setLoadingBtn(true);
-                          Signupfunction(email,password,name)
+                          Signupfunction(email,password,name,router)
                           // setIsDisabledSignup(true);
                         }}
                         className={`${
@@ -213,8 +217,9 @@ const LoginPage = () => {
 
                       <button
                         type="button"
-                        onClick={() => {
-                          login(email,password)
+                        onClick={(e) => {
+                          e.preventDefault(),
+                          login(email,password,router)                          
                           // setIsDisabledSignup(true);
                         }}
                         

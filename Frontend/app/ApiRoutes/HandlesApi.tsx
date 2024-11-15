@@ -1,20 +1,24 @@
 import axios from "axios"
 import ProfilePage from "@/components/Profile"
+import { useRouter } from "next/navigation";
 
 const NURL = process.env.NEXT_PUBLIC_URL;
 
-const SignupUser = async ({password,email,username}:any) => {
+
+const SignupUser = async ({password,email,username,router}:any) => {
+    console.log(NURL)
     try {
-        const response = await axios.post(`${NURL}/register`,{password,email,username});
+        const response = await axios.post(`http://localhost:5000/register`, {password,email,username});
+        // const response = await axios.post(`${NURL}/register`, {password,email,username});
         console.log(response.data);
         const { token } = response.data;
-
+        
         if (token) {
             localStorage.setItem('jwtToken', token);
             return(
-                <div>
-                <ProfilePage />
-                </div>
+                
+                router.push("/ProfilePage")
+               
             )
         }
     } catch (error) {
@@ -25,18 +29,20 @@ const SignupUser = async ({password,email,username}:any) => {
 
 
 
-const LoginUser = async ({email,password}:any) => {
+const LoginUser = async ({email,password,router}:any) => {
     console.log({email,password});
+    // console.log(NURL)
     try {
-        const response = await axios
-        .post(`${NURL}/login`,{email,password});
-        const { token } = response.data;
+        const res = await axios
+        .post(`http://localhost:5000/auth/login`,{email,password});
+        // .post(`${NURL}/login`,{email,password});
+        const { token } = res.data;
+        console.log("here")
+        console.log(res.data)
         if (token) {
             localStorage.setItem('jwtToken', token);
             return(
-                <div>
-                <ProfilePage/>
-                </div>
+                router.push("/ProfilePage")
             )
         }
     } catch (error) {
