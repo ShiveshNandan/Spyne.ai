@@ -7,9 +7,29 @@ import CarCard from '../../components/CarCard';
 import { useSearchParams } from 'next/navigation';
 import { fuels, yearsOfProduction } from '@/constants';
 import ShowMore from '../../components/ShowMore';
+import { useEffect, useState } from "react";
+import { getCar } from "../ApiRoutes/HandlesApi";
+
+
+interface Cars {
+  title: string;
+description: string;
+tags: any;
+datePublished: any;
+lastUpdated: any;
+}
 
 
 export default function CarCatalogue() {
+  const [getAllCars, setgetAllCars] = useState<Cars[]>([])
+
+  useEffect(() => {
+    const getTheCars = async () => {
+      await getCar(setgetAllCars);
+    }
+    getTheCars();
+  }, [])
+  
 
   const searchParam = useSearchParams()
  
@@ -58,8 +78,10 @@ export default function CarCatalogue() {
       {!isDataEmpty ? (
           <section>
             <div className='home__cars-wrapper'>
-              {allCars.map((car) => (
-                <CarCard car={car} />
+              {allCars.map((car,index:any) => (
+                <div id={index}>
+                  <CarCard car={car} />
+                </div>
               ))}
             </div>
 
