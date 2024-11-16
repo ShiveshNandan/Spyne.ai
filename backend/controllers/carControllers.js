@@ -1,14 +1,16 @@
 import car from '../schema/car.js';
 
 export const addcar = async (req, res) => {
-  const { title, description, tags} = req.body;
+  const { title, description, tags,username} = req.body;
   
   try {
     const newcar = new car({
       title,
       description,
-      tags
+      tags,
+      username
     });
+    console.log("first")
 
     await newcar.save();
     res.status(201).json({ message: 'car added successfully', car: newcar });
@@ -59,4 +61,18 @@ export const getcar = async (req, res) => {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
       }
+};
+
+export const getUsercar = async (req, res) => {
+  const { username } = req.body;
+  try {
+      const cars = await car.find({username : `${username}`});
+      if (!cars) {
+        return res.status(404).json({ message: 'No car found' });
+      }
+      res.status(200).json(cars);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
+    }
 };

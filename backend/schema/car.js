@@ -12,6 +12,10 @@ const carschema = new mongoose.Schema({
     tags: [
       { type: String }
     ],
+    username: {
+      type : String,
+      required : true
+    },
     datePublished: {
         type: Date,
         default: Date.now,
